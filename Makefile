@@ -1,5 +1,5 @@
 PROJECT  = xml_viewer
-DEPS     = reup lager erlsom cowboy triq
+DEPS     = reup lager erlsom cowboy bullet triq
 dep_reup = git https://github.com/RJ/erlang-reup.git master
 
 TEST_ERLC_OPTS = +'{parse_transform, lager_transform}'
