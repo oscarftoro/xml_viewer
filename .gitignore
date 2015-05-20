@@ -1,0 +1,8 @@
+.edts
+.erlang.mk.packages.v2
+deps
+files
+log
+*~
+priv/client/*~
+src/*~

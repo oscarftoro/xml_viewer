@@ -1,0 +1,17 @@
+{application, xml_viewer, [
+	{description, ""},
+	{vsn, "0.1.0"},
+	{id, "git"},
+	{modules, []},
+	{registered, []},
+	{applications, [
+		kernel,
+		stdlib,
+                sasl,
+                cowboy,
+                erlsom,
+                reup
+	]},
+	{mod, {xml_viewer_app, []}},
+	{env, []}
+]}.
