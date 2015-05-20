@@ -26,4 +26,6 @@ path_list() ->
   Static_assets = {"/",cowboy_static,{priv_dir,xml_viewer,"client"}},
   Index         = {"/",cowboy_static,{priv_file,xml_viewer,"client/index.html",
   [{mimetypes, {<<"text">>, <<"html">>, []}}]}},
-  [Index,Static_assets].
+  WebSockets = {"/ws",xml_viewer,[{handler,xml_viewer_ws_handler}]},
+  
+  [Index,Static_assets,WebSockets].

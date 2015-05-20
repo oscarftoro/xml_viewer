@@ -1,5 +1,6 @@
 .edts
 .erlang.mk.packages.v2
+ebin/
 deps
 files
 log
