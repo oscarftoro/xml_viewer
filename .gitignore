@@ -1,9 +1,13 @@
 .edts
 .erlang.mk.packages.v2
-ebin/
+ebin
 deps
 files
 log
 *~
 priv/client/*~
 src/*~
+src/#*
+src/.#*
+priv/client/node_modules/
+priv/client/bower_components/
