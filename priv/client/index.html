@@ -2,16 +2,23 @@
 <html>
 <head>
 <meta charset="utf-8">
- 
+<script src="js/bullet.js"></script>
+<script src="bower_components/react/react.js"></script>
+<script src="bower_components/react/JSXTransformer.js"></script>
 <title>XML_viewer</title>
-
 </head>
 <body>
  <h1> Hello Static World</h1>
  <h2> </h2>
 <h3> ..Så er der statiske ressourcer....</h3>
 <h3> ...sabélo...</h3>
-
+<div id="example"></div>
+    <script type="text/jsx">
+      React.render(
+        <h1>Hello, world!</h1>,
+        document.getElementById('example')
+      );
+    </script>
 </body>
 
 <script>

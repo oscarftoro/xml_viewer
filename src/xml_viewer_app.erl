@@ -23,9 +23,10 @@ stop()->
 
 path_list() ->
   % we are only going to serve static files this time
-  Static_assets = {"/",cowboy_static,{priv_dir,xml_viewer,"client"}},
-  Index         = {"/",cowboy_static,{priv_file,xml_viewer,"client/index.html",
-  [{mimetypes, {<<"text">>, <<"html">>, []}}]}},
+  Static_assets = {"/[...]",cowboy_static,{priv_dir,xml_viewer,"client",
+  [{mimetypes, cow_mimetypes, all}]}},
+   Index         = {"/",cowboy_static,{priv_file,xml_viewer,"client/index.html",
+   [{mimetypes, {<<"text">>, <<"html">>, []}}]}},
   WebSockets = {"/ws",xml_viewer,[{handler,xml_viewer_ws_handler}]},
   
   [Index,Static_assets,WebSockets].
