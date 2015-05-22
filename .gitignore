@@ -12,3 +12,4 @@ src/.#*
 priv/client/node_modules/
 priv/client/bower_components/
 .xml_viewer.plt
+react_notes.md
