@@ -4,6 +4,7 @@
 -export([start/2]).
 -export([stop/1]).
 -export([start/0,stop/0]).
+
 start(_Type, _Args) ->
 
   Path_list = path_list(), 
@@ -29,5 +30,6 @@ path_list() ->
    [{mimetypes, {<<"text">>, <<"html">>, []}}]}},
   WebSockets = {"/ws",bullet_handler,[{handler,xml_viewer_ws_handler}]},
   
-  
-  [Index,Static_assets,WebSockets].
+  %% the order is very important, 
+  %% does not work if bullet_handler compiles as the last element of the list 
+  [Index,WebSockets,Static_assets].
