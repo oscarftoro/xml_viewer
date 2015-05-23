@@ -10,7 +10,7 @@ start(_Type, _Args) ->
   Dispatch = cowboy_router:compile([
     {'_',Path_list}
   ]),
-  {ok,_pid} = cowboy:start_http(xml_viewer_app,100,[{port,8181}],
+    {ok,_pid} = cowboy:start_http(http,10,[{port,8181}],
   [{env,[{dispatch,Dispatch}]}]),
   xml_viewer_sup:start_link().
 
@@ -25,8 +25,9 @@ path_list() ->
   % we are only going to serve static files this time
   Static_assets = {"/[...]",cowboy_static,{priv_dir,xml_viewer,"client",
   [{mimetypes, cow_mimetypes, all}]}},
-   Index         = {"/",cowboy_static,{priv_file,xml_viewer,"client/index.html",
+   Index        = {"/",cowboy_static,{priv_file,xml_viewer,"client/index.html",
    [{mimetypes, {<<"text">>, <<"html">>, []}}]}},
-  WebSockets = {"/ws",xml_viewer,[{handler,xml_viewer_ws_handler}]},
+  WebSockets = {"/ws",bullet_handler,[{handler,xml_viewer_ws_handler}]},
+  
   
   [Index,Static_assets,WebSockets].
