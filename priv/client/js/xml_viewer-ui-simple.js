@@ -13,7 +13,7 @@ $(document).ready(function(){
         console.log('bullet: closed');
     };
     bullet.onmessage = function(e){
-        alert(e.data);
+        console.log(e.data);
     };
     bullet.onheartbeat = function(){
         bullet.send('ping');

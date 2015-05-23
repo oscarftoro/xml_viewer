@@ -1,13 +1,12 @@
 var GenericWrapper = React.createClass({
   componentDidMount: function() {
     console.log(Array.isArray(this.props.children)); // => true
-    (bullet);
+     ;
   },
-
   render: function() {
     return <div />;
-  }
-});
+   } 
+}); 
 
 var LoadXMLButton = React.createClass({
   getInitialState: function() {
@@ -36,24 +35,69 @@ var LoadXMLButton = React.createClass({
 // bullet communication//
 /////////////////////////
 
-var bullet = function(){
-    var bullet = $.bullet('ws://localhost:8181/ws');
-    bullet.onopen = function(){
-        console.log('bullet: opened');
-    };
-    bullet.ondisconnect = function(){
-        console.log('bullet: disconnected');
-    };
-    bullet.onclose = function(){
-        console.log('bullet: closed');
-    };
-    bullet.onmessage = function(e){
-        alert(e.data);
-    };
-    bullet.onheartbeat = function(){
-        bullet.send('ping');
-    }
-}();
+// var bullet = function(){
+//     var bullet = $.bullet('ws://localhost:8181/ws');
+//     bullet.onopen = function(){
+//         console.log('bullet: opened');
+//     };
+//     bullet.ondisconnect = function(){
+//         console.log('bullet: disconnected');
+//     };
+//     bullet.onclose = function(){
+//         console.log('bullet: closed');
+//     };
+//     bullet.onmessage = function(e){
+//         alert(e.data);
+//     };
+//     bullet.onheartbeat = function(){
+//         bullet.send('ping');
+//     }
+// }; 
+
+///////////////////////
+//Auxiliar functions //
+///////////////////////
+function notify(text) {
+  var date = (new Date()).toLocaleString();
+  output.innerHTML = output.innerHTML + '[' + date + '] ' + text + '\n';
+}
+
+function onData(data) {
+  notify(data);
+}
+var bullet = function bullet(){
+};
+
+function start(url, options, notify, onData) {
+  var connection = $.bullet(url, options);
+
+  connection.onopen = function(){
+    notify('online');
+   };
+
+   connection.onclose = connection.ondisconnect = function(){
+     notify('offline');
+   };
+
+   connection.onmessage = function(e){
+     if (e.data === 'pong'){
+       notify('pong');
+     } else {
+       onData(e.data);
+     }
+   };
+
+   connection.onheartbeat = function(){
+     connection.send('ping');
+        notify('ping');
+   };
+     return connection;
+}
+
+  connection = start("ws://" + window.location.host + "/ws", {}, notify, onData);
+
+
+
 
 React.render(
   <LoadXMLButton />,
