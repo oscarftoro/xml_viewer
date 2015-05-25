@@ -24,6 +24,13 @@ var LoadFileButton = React.createClass({
   }
 
 });
+///////////////////////
+//Auxiliar functions //
+///////////////////////
+
+function createTree(dom,props) {
+  d3.select(dom).append('h1').text("Ke paso");
+}
 
 /////////////////////////////////////
 /// The sacred D3.js Tree Wrapper //
@@ -33,7 +40,20 @@ var Tree = React.createClass({
     width  : React.PropTypes.number,
     height : React.PropTypes.number
   },
-
+  getDefaultProps: function() {
+    return {
+      width : 300,
+      height: 350,
+    };
+  },
+  componentDidMount: function() {
+    var dom = this.getDOMNode();
+    createTree(dom,this.props);
+  },
+  shouldComponentUpdate: function(nextProps, nextState) {
+    var dom = this.getDOMNode();//try with nextProps
+    createTree(dom,this.props);
+  },
   render:  function(){
     return(
       <div>
@@ -84,9 +104,8 @@ var bullet = function(){
     }
 }();
 
-///////////////////////
-//Auxiliar functions //   <LoadFileButton bulletService={bullet} type="XML"/>
-///////////////////////
+
+
 
 var data = {
  "name": "flare",
