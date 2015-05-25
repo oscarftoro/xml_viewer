@@ -4,7 +4,7 @@ var LoadFileButton = React.createClass({
 
   },
   getInitialState: function() {
-
+      var fileLoaded = false;
       return {path: ""};
   },
   handleClick: function(event) {
@@ -24,7 +24,29 @@ var LoadFileButton = React.createClass({
   }
 
 });
-//define a box to
+
+/////////////////////////////////////
+/// The sacred D3.js Tree Wrapper //
+///////////////////////////////////
+var Tree = React.createClass({
+  propTypes: {
+    width  : React.PropTypes.number,
+    height : React.PropTypes.number
+  },
+
+  render:  function(){
+    return(
+      <div>
+      <h4> {this.props.title}</h4>
+      </div>
+    );
+  }
+
+});
+
+///////////////////////////////////////////
+//define an Alert to print message status//
+///////////////////////////////////////////
 var Alert = React.createClass({
 
   render: function(){
@@ -66,7 +88,33 @@ var bullet = function(){
 //Auxiliar functions //   <LoadFileButton bulletService={bullet} type="XML"/>
 ///////////////////////
 
-
+var data = {
+ "name": "flare",
+ "children": [
+  {
+   "name": "analytics",
+   "children": [
+    {
+     "name": "cluster",
+     "children": [
+      {"name": "AgglomerativeCluster", "size": 3938},
+      {"name": "CommunityStructure", "size": 3812},
+      {"name": "HierarchicalCluster", "size": 6714},
+      {"name": "MergeEdge", "size": 743}
+     ]
+    },
+    {
+     "name": "graph",
+     "children": [
+      {"name": "BetweennessCentrality", "size": 3534},
+      {"name": "LinkDistance", "size": 5731},
+      {"name": "MaxFlowMinCut", "size": 7840},
+      {"name": "ShortestPaths", "size": 5914},
+      {"name": "SpanningTree", "size": 3416}
+     ]
+    }
+    ]
+  }]};
 React.render(
 <div class="row">
   <div class="col-md-4">
@@ -74,7 +122,7 @@ React.render(
    <LoadFileButton bulletService={bullet} type="XSD"/>
    <Alert role="alert-info" message="use the button above" />
   </div>
-  <div class="col-md-8">A tree here</div>
+  <div class="col-md-8"><Tree data={data} title="Hej Tree" /></div>
 </div>,
   document.getElementById('container')
 );
