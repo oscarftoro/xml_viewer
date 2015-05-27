@@ -13,8 +13,12 @@ init(_Transport, Req, _Opts, _Active) ->
   {ok, Req, undefined_state}.
  
 stream(Data, Req, State) ->
-    {reply, Data, Req, State}.
- 
+  
+  ?DEBUG(Data),
+  ?DEBUG(Req),
+   
+  {reply, Data, Req, State}.
+  
 info(_Info, Req, State) ->
     {ok, Req, State}.
  
