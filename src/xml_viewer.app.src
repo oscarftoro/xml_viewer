@@ -11,7 +11,7 @@
                 cowboy,
                 bullet,
                 erlsom,
-                reup
+                sync
 	]},
 	{mod, {xml_viewer_app, []}},
 	{env, []}
