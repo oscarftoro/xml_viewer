@@ -28,8 +28,9 @@ path_list() ->
   [{mimetypes, cow_mimetypes, all}]}},
    Index        = {"/",cowboy_static,{priv_file,xml_viewer,"client/index.html",
    [{mimetypes, {<<"text">>, <<"html">>, []}}]}},
+  UploadFile = {"/upload",xml_viewer_upload_handler,[]},
   WebSockets = {"/ws",bullet_handler,[{handler,xml_viewer_ws_handler}]},
   
   %% the order is very important, 
   %% does not work if bullet_handler compiles as the last element of the list 
-  [Index,WebSockets,Static_assets].
+  [Index,UploadFile,WebSockets,Static_assets].

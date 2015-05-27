@@ -1,24 +1,34 @@
 
-var LoadFileButton = React.createClass({
+var FileForm = React.createClass({
   componentDidMount: function() {
+
   },
   getInitialState: function() {
-      var fileLoaded = false;
-      return {path: ""};
-  },
-  handleClick: function(event) {
-    console.log("hola " + event.target.value);
-    console.log(this.props);
-    this.props.bulletService.send("holi from javascript");
 
+      return {data_uri:null};
+  },
+  hamdleSubmit: function(event) {
+    event.preventDefault();
+  },
+  handleChange: function(event) {
+    console.log("file " + event.target.value);
+
+    //test to try bullet; this works!
+    //bullet.send("hola" + event.target.value);
+    //upload file
+
+    document.forms["xmldata"].submit();
+    event.preventDefault();
   },
   render: function() {
 
     return (
+      <form name="xmldata" method="post" onSubmit={this.handleSubmit} encType="multipart/form-data" action="/upload">
       <div class="form-group">
-      <label for="xmlLoadButton">Select an {this.props.type} file</label>
-      <input type="file" id={this.props.type + 'input'} onChange={this.handleClick} />
+      <label for="LoadButton">Select an XML file</label>
+      <input type="file" name="inputfile" onChange={this.handleChange} />
       </div>
+      </form>
     );
   }
 
@@ -202,6 +212,7 @@ var Tree = React.createClass({
 ///////////////////////////////////////////
 //define an Alert to print message status//
 ///////////////////////////////////////////
+
 var Alert = React.createClass({
 
   render: function(){
@@ -219,8 +230,7 @@ var Alert = React.createClass({
 /////////////////////////
 // bullet communication//
 /////////////////////////
-
-var bullet = function(){
+var bulletService = function(){
     var bullet = $.bullet("ws://" + window.location.host + "/ws",{});
     bullet.onopen = function(){
         console.log('bullet: opened');
@@ -236,9 +246,19 @@ var bullet = function(){
     };
     bullet.onheartbeat = function(){
         bullet.send('ping');
-    }
-}();
 
+    }
+    return bullet;
+};
+
+
+// initiallize the global bullet function
+//var bullet = bulletService();
+
+
+
+
+// dummy data to be replaced
 var data = {
  "name": "flare",
  "children": [
@@ -270,8 +290,8 @@ var data = {
 React.render(
 <div class="row">
   <div class="col-md-4">
-   <LoadFileButton bulletService={bullet} type="XML"/>
-   <LoadFileButton bulletService={bullet} type="XSD"/>
+   <FileForm/>
+
    <Alert role="alert-info" message="use the button above" />
   </div>
   <div class="col-md-8"><Tree data={data} title="Hej Tree" /></div>
