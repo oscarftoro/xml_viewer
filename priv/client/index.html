@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf8">
 
 <script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="js/bullet.js"></script>
-<!-- react -->
-<script src="bower_components/react/react-with-addons.js"></script>
-<script src="bower_components/react/JSXTransformer.js"></script>
-<script type="text/jsx" src="js/xml_viewer-ui.js"></script>
+<!-- d3 -->
+
 <script src="bower_components/d3/d3.js"></script>
 <!-- bootstrap -->
 <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -22,16 +20,56 @@
  <h1> XML_viewer </h1>
  <h2> view your xml tree </h2>
 
+<form>
+    <input type="file" id="inputfile" name="file">
+    <input type="file" id="xsdfile"   name="xsdfile">
+    <input type="submit">
+</form>
 
 
 
-<div id="container"></div>
 
 
 </body>
 
 <script>
+// $( 'form' ).submit(function ( e ) {
+//     var data, xhr;
+//
+//     data = new FormData();
+//     data.append( 'inputfile', $( '#inputfile' )[0].files[0] );
+//
+//     xhr = new XMLHttpRequest();
+//
+//     xhr.open('POST', 'http://' + window.location.host + "/upload", true );
+//     xhr.onreadystatechange = function ( response ) {
+//       console.log(response);
+//     };
+//     xhr.send( data );
+//
+//     e.preventDefault();
+// });
 
+$( 'form' ).submit(function ( e ) {
+    var data;
+    data = new FormData();
+    data.append( 'inputfile', $( '#inputfile' )[0].files[0] );
+
+    $.ajax({
+        url: 'http://' + window.location.host + '/upload',
+        data: data,
+        processData: false,
+        contentType: false,
+        type: 'POST',
+        success: function (data,textStatus,jqXHR) {
+            console.log('data ' + JSON.stringify(data));
+            console.log('textStatus ' + textStatus);
+            console.log('jqXHR' + JSON.stringify(jqXHR));
+        }
+    });
+
+    e.preventDefault();
+});
 
 </script>
 
