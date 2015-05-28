@@ -20,18 +20,27 @@
 <title>XML_viewer</title>
 </head>
 <body>
- <h1> XML_viewer </h1>
- <h2> view your xml tree </h2>
-
-<form>
-    <input type="file" id="inputfile" name="file">
-    <input type="file" id="xsdfile"   name="xsdfile">
-    <input type="submit">
-</form>
-
-<div id="tree"></div>
-
-
+  <div class="container">
+    <div class= "row">
+      <div class ="col-md-12">
+        <h1 class="text-center"> XML_viewer </h1>
+        <h2 class="text-center"> view your xml tree </h2>
+      </div>
+  </div>
+  <form>
+      <div class="form-group">
+        <input type="file" id="xmlfile" name="file">
+      </div>
+      <div class="form-group">
+        <input type="file" id="xsdfile"   name="xsdfile">
+      </div>
+      <input type="submit" class="btn btn-default">
+  </form>
+  <div class="row">
+    <p class="bg-info col-md-6 center-block">Select an xml and an xsd file</p>
+    <div id="tree"></div>
+  </div>
+</div>
 
 </body>
 
@@ -56,8 +65,8 @@
 $( 'form' ).submit(function ( e ) {
     var data;
     data = new FormData();
-    data.append( 'inputfile', $( '#inputfile' )[0].files[0] );
-
+    data.append('xmlfile', $( '#xmlfile' )[0].files[0] );
+    data.append('xsdfile', $('#xsdfile')[0].files[0]);
     $.ajax({
         url: 'http://' + window.location.host + '/upload',
         data: data,

@@ -13,23 +13,37 @@ init(_,Req, _Opts) ->
   {ok,Req, undefined}.
 
 handle(Req,State) ->
-  ?DEBUG(Req),
-    {ok, Headers, Req2}  = cowboy_req:part(Req),
- ?DEBUG(Req2),
-  {ok, Data, Req3}    = cowboy_req:part_body(Req2),
-  ?DEBUG(Req3),
- 
-  {file, <<"inputfile">>, Filename, ContentType, _TE} = 
-    cow_multipart:form_data(Headers),
-  io:format("Received file ~p of content-type ~p as follow:~n~p~n~n",  
-  [Filename, ContentType, Data]),
-  %% now I have the data structure
-  _ErlangTerm = xml_viewer_nucleus:decode_simple(Data),
-  {ok, Req4} = cowboy_req:reply(200, [
-    {<<"content-type">>, <<"application/json">>}
-], <<"{\"message\":\"hi\"}">>, Req3),
-  {ok, Req4, State}.
-   
+  {ok, XMLHeaders, Req2} = cowboy_req:part(Req),
+  %%take the first part(XML file)
+  {ok, XMLData, Req3}    = cowboy_req:part_body(Req2),
+  %%take the second part (XSD file)
+  {ok,XSDHeaders,Req4}   = cowboy_req:part(Req3),  
+  {ok,XSDData,Req5}      = cowboy_req:part_body(Req4),
+  ?DEBUG(XMLData),
+  ?DEBUG(XSDData),
+  {file,_XmlFile,_XmlFileName,_XmlType,_7bit} = 
+    cow_multipart:form_data(XMLHeaders),
+  {file,_XsdFile,_XsdFileName,_XsdTupe,_} =
+     cow_multipart:form_data(XSDHeaders),
+  %%XML analysis
+  _XMLTerm = xml_viewer_nucleus:decode_simple(XMLData),
+  ?DEBUG(_XMLTerm),
+  _IsSchemaValid = isSchemaValid(XMLData,XSDData),
+  ?DEBUG(_IsSchemaValid),
 
+  %_ErlangTerm = xml_viewer_nucleus:decode_simple(Data),
+  %build my response
+  {ok, Req6} = cowboy_req:reply(200, [
+    {<<"content-type">>, <<"application/json">>}
+], <<"{\"message\":\"hi\"}">>, Req5),
+  {ok, Req6, State}.   	  
+    
 terminate(_Reason,_Req,_State) ->
     ok.
+
+%%Auxiliar functions
+isSchemaValid(XML,XSD)->
+  case xml_viewer_nucleus:validate_schema(XSD,XML) of
+    {error,Ex} -> {false,Ex};
+    _          -> true
+  end.
