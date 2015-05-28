@@ -1,46 +1,12 @@
 
-var FileForm = React.createClass({
-  componentDidMount: function() {
-
-  },
-  getInitialState: function() {
-
-      return {data_uri:null};
-  },
-  hamdleSubmit: function(event) {
-    event.preventDefault();
-  },
-  handleChange: function(event) {
-    console.log("file " + event.target.value);
-
-    //test to try bullet; this works!
-    //bullet.send("hola" + event.target.value);
-    //upload file
-
-    document.forms["xmldata"].submit();
-    event.preventDefault();
-  },
-  render: function() {
-
-    return (
-      <form name="xmldata" method="post" onSubmit={this.handleSubmit} encType="multipart/form-data" action="/upload">
-      <div class="form-group">
-      <label for="LoadButton">Select an XML file</label>
-      <input type="file" name="inputfile" onChange={this.handleChange} />
-      </div>
-      </form>
-    );
-  }
-
-});
 ///////////////////////
 //The Sacred D3 Tree //
 ///////////////////////
 
-function createTree(dom,props) {
+function createTree(data) {
   var margin = {top: 20, right: 120, bottom: 20, left: 120},
-  width      = props.width - margin.right - margin.left,
-  height     = props.height - margin.top - margin.bottom;
+  width      = 960 - margin.right - margin.left,
+  height     = 800 - margin.top - margin.bottom;
 
   var i    = 0,
   duration = 750,
@@ -51,14 +17,14 @@ function createTree(dom,props) {
   var diagonal = d3.svg.diagonal()
     .projection(function(d) { return [d.y, d.x]; });
 
-  var svg = d3.select("body").append("svg")
+  var svg = d3.select("#tree").append("svg")
     .attr("width", width + margin.right + margin.left)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   //load data
-  root = props.data;
+  root = data;
   root.x0 = height / 2;
   root.y0 = 0;
 
@@ -177,124 +143,40 @@ function createTree(dom,props) {
 
   }//end update
 
-//////////////////////////////////////////
-/// The sacred D3's Tree React Wrapper //
-////////////////////////////////////////
-var Tree = React.createClass({
-  propTypes: {
-    width  : React.PropTypes.number,
-    height : React.PropTypes.number
-  },
-  getDefaultProps: function() {
-    return {
-      width : 960,
-      height: 800,
-    };
-  },
-  componentDidMount: function() {
-    var dom = this.getDOMNode();
-    createTree(dom,this.props);
-  },
-  shouldComponentUpdate: function(nextProps, nextState) {
-    var dom = this.getDOMNode();//try with nextProps
-    createTree(dom,this.props);
-  },
-  render:  function(){
-    return(
-      <div>
-      <h4> {this.props.title}</h4>
-      </div>
-    );
-  }
-
-});
-
-///////////////////////////////////////////
-//define an Alert to print message status//
-///////////////////////////////////////////
-
-var Alert = React.createClass({
-
-  render: function(){
-    // the role can be:alert-success,
-    // alert-info,alert-warning or
-    // alert-danger
-    return(
-      React.createElement(
-        'div',{className:'alert ' +
-        this.props.role},this.props.message)
-    );
-  }
-});
-
-/////////////////////////
-// bullet communication//
-/////////////////////////
-var bulletService = function(){
-    var bullet = $.bullet("ws://" + window.location.host + "/ws",{});
-    bullet.onopen = function(){
-        console.log('bullet: opened');
-    };
-    bullet.ondisconnect = function(){
-        console.log('bullet: disconnected');
-    };
-    bullet.onclose = function(){
-        console.log('bullet: closed');
-    };
-    bullet.onmessage = function(e){
-        console.log(e.data);
-    };
-    bullet.onheartbeat = function(){
-        bullet.send('ping');
-
-    }
-    return bullet;
-};
-
-
-// initiallize the global bullet function
-//var bullet = bulletService();
-
-
 
 
 // dummy data to be replaced
-var data = {
- "name": "flare",
- "children": [
-  {
-   "name": "analytics",
-   "children": [
-    {
-     "name": "cluster",
-     "children": [
-      {"name": "AgglomerativeCluster", "size": 3938},
-      {"name": "CommunityStructure", "size": 3812},
-      {"name": "HierarchicalCluster", "size": 6714},
-      {"name": "MergeEdge", "size": 743}
-     ]
-    },
-    {
-     "name": "graph",
-     "children": [
-      {"name": "BetweennessCentrality", "size": 3534},
-      {"name": "LinkDistance", "size": 5731},
-      {"name": "MaxFlowMinCut", "size": 7840},
-      {"name": "ShortestPaths", "size": 5914},
-      {"name": "SpanningTree", "size": 3416}
-     ]
-    }
-    ]
-  }]};
-
-React.render(
-<div class="row">
-  <div class="col-md-4">
-   <FileForm/>
-
-   <Alert role="alert-info" message="use the button above" />
-  </div>
-  <div class="col-md-8"><Tree data={data} title="Hej Tree" /></div>
-</div>,
-  document.getElementById('container')
-);
+// var data = {
+//  "name": "flare",
+//  "children": [
+//   {
+//    "name": "analytics",
+//    "children": [
+//     {
+//      "name": "cluster",
+//      "children": [
+//       {"name": "AgglomerativeCluster", "size": 3938},
+//       {"name": "CommunityStructure", "size": 3812},
+//       {"name": "HierarchicalCluster", "size": 6714},
+//       {"name": "MergeEdge", "size": 743}
+//      ]
+//     },
+//     {
+//      "name": "graph",
+//      "children": [
+//       {"name": "BetweennessCentrality", "size": 3534},
+//       {"name": "LinkDistance", "size": 5731},
+//       {"name": "MaxFlowMinCut", "size": 7840},
+//       {"name": "ShortestPaths", "size": 5914},
+//       {"name": "SpanningTree", "size": 3416}
+//      ]
+//     }
+//     ]
+//   }]}
+var data = { "name": "foo",
+ "children" : [
+  	{"name": "attr", "children":[{"name": "baz"}]},
+        {"name": "bar","children":[{"name":"x"},{"name":"y"}]}
+ ]
+};
+$(document).ready(createTree(data));
