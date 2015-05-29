@@ -75,8 +75,8 @@ $( 'form' ).submit(function ( e ) {
         type: 'POST',
         success: function (data,textStatus,jqXHR) {
             console.log('data ' + JSON.stringify(data));
-            console.log('textStatus ' + textStatus);
-            console.log('jqXHR' + JSON.stringify(jqXHR));
+            tree = data.tree
+            createTree(tree);            
         }
     });
 

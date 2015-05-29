@@ -35,7 +35,7 @@ handle(Req,State) ->
   %build my response
   {ok, Req6} = cowboy_req:reply(200, [
     {<<"content-type">>, <<"application/json">>}
-], <<"{\"message\":\"hi\"}">>, Req5),
+], <<"{\"tree\": {\"name\": \"foo\", \"children\" : [{\"name\": \"attr\", \"children\":[{\"name\": \"baz\"}]},{\"name\": \"bar\",\"children\":[{\"name\":\"x\"},{\"name\":\"y\"}]}]} }">>, Req5),
   {ok, Req6, State}.   	  
     
 terminate(_Reason,_Req,_State) ->
