@@ -1,8 +1,8 @@
 -module(xml_viewer_nucleus).
 -export([decode_simple/1,
          decode_sax/1,
-         validate_schema/2
-         %childs/2
+         validate_schema/2,
+         parse_term/1
          %generate_tree/1
         ]).
 
@@ -42,26 +42,82 @@ validate_schema(Xsd,Xml)->
       {error,[{exception,Exception}|_]} ->  Exception
   end.
 
-%% construct_tree(startDocument,Acc)->
-%%   ok;
-%% construct_tree({processingInstruction,_Xml,_Rest},Acc)->
-%%   parse_sa
 
-%%   Tree = {[{<<"name">>,TreeName},{<<"children">>,Children}]}
-%%   Children = {<<"children">>,[Tree]}
+%% %% A simple version of the tree: 
+%% children([{Name,_,[Value | [] ]}| Rest], Acc)  ->
+%%   children(Rest,[[do_name(Name),{<<"children">>,[Value]}]|Acc]) ;
+%% parse_list([H|T],Acc)->
+%%     parse_list(T,do_tree(H,Acc));
+%% parse_list([],Acc)->
+%%     Acc.
+
+%% do_name(Value)->
+%%   #{<<"name">> => Value}.
+
+%% do_children(Value)->
+%%   #{<<"children">> => [do_name(Value)]}.
+%% add_children(Map,Value) ->
+%%     List = maps:get(<<"children">>),
+%%     maps:update(<<"children">>,[Value|List],Map).
     
+%% add_child({<<"children">>,List},Value)->   
+%%   {<<"children">>,[Value|List]}.
 
-%% -type tree()     :: {[{binary(),binary(),children()}]}.
-%% -type children() :: {binary(),[{tree()}]}.
-%% generate_tree(Expression)->
-%%   {Name,PropList,Tree} = Expression
-%%   childs(Childs,[]).
- 
-%% childs([{Name,_,List}||Rest],Acc)->
-%%     childs(Rest,[{ <<"children">>,{list_to_binary(Name),[list_to_binary(Name)]} }]); 
-%% childs([],Acc) ->
-%%   Acc.
+%% do_tree({Name,_,[[{N,_,_V}| []] | Rest] }, Acc)->
+    
+%%   Res = 
+%%     {<<"children">>,[{<<"name">>,Name},{<<"children">>,[{<<"name">>,N}]}]},
+%%   do_tree(Rest,[Res|Acc]);
+
+%% do_tree({Name,_,[Head|Rest]}, Acc) ->
+%%   {N,_,V} = Head,
+%%   case Name =:= N of
+%%     true -> 
+%%       add_child(Acc,V);
+%%     _    ->
+%%       do_children(Acc,V)
+%%   end,
+%%   do_tree(Rest,Acc);
+
+%% do_tree([],Acc) ->
+%%   Acc.  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%when the list contain only one element( a string)
+%% parse_term({Name,_,[Head | [] ]}, Acc)->
+parse_term(Tuple) ->
+  List = tuple_to_list(Tuple),
+  [H|[T]] = List,
+  Acc =#{<<"name">> => list_to_binary(H),
+      <<"children">> => []},
+  tree(T,Acc).
+
+tree([[{Name,Value}]|T],Acc) ->
+  L = maps:get(<<"children">>,Acc),
+  ?DEBUG(L),
+  Attribute = do_tree(Name,Value,[]),
+  ?DEBUG(Attribute),
+  Acc2 = Acc#{<<"children">> := [Attribute|L]},
+  ?DEBUG(Acc2),
+  tree(T,Acc2);
 
 
-%% child_generator([Name,_,Value])->
-%%   <<"children">>.
+tree([{Name,_,Value}|T],Acc) ->
+ ?DEBUG(Value),
+  tree([[{Name,Value}]|T],Acc);
+
+%% tree([{Name,_,[Value|OtherVals]}|T],Acc)->
+%%   ok;
+tree([],Acc) ->
+  Acc.
+
+%% -spec do_tree(string,[map()])-> map().
+do_tree(Name,Child,Acc) ->
+  #{<<"name">> => list_to_binary(Name),
+      <<"children">> => do_child(Child,Acc)}.
+do_child(Child,Acc) ->
+  [#{<<"name">> => list_to_binary(Child)}|Acc].
+%% parse_term({N,_,Ls},N,Acc) ->
+  
+%% parse_term({N,_,[]},N,Acc)->
+%%     Acc.
