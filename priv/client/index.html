@@ -37,7 +37,7 @@
       <input type="submit" class="btn btn-default">
   </form>
   <div class="row">
-    <p class="bg-info col-md-6 center-block">Select an xml and an xsd file</p>
+    <p class="bg-info col-md-6 center-block">Your XML is valid</p>
     <div id="tree"></div>
   </div>
 </div>
@@ -76,7 +76,7 @@ $( 'form' ).submit(function ( e ) {
         success: function (data,textStatus,jqXHR) {
             console.log('data ' + JSON.stringify(data));
             tree = data.tree
-            createTree(tree);            
+            createTree(tree);
         }
     });
 

@@ -42,82 +42,82 @@ validate_schema(Xsd,Xml)->
       {error,[{exception,Exception}|_]} ->  Exception
   end.
 
-
-%% %% A simple version of the tree: 
-%% children([{Name,_,[Value | [] ]}| Rest], Acc)  ->
-%%   children(Rest,[[do_name(Name),{<<"children">>,[Value]}]|Acc]) ;
-%% parse_list([H|T],Acc)->
-%%     parse_list(T,do_tree(H,Acc));
-%% parse_list([],Acc)->
-%%     Acc.
-
-%% do_name(Value)->
-%%   #{<<"name">> => Value}.
-
-%% do_children(Value)->
-%%   #{<<"children">> => [do_name(Value)]}.
-%% add_children(Map,Value) ->
-%%     List = maps:get(<<"children">>),
-%%     maps:update(<<"children">>,[Value|List],Map).
-    
-%% add_child({<<"children">>,List},Value)->   
-%%   {<<"children">>,[Value|List]}.
-
-%% do_tree({Name,_,[[{N,_,_V}| []] | Rest] }, Acc)->
-    
-%%   Res = 
-%%     {<<"children">>,[{<<"name">>,Name},{<<"children">>,[{<<"name">>,N}]}]},
-%%   do_tree(Rest,[Res|Acc]);
-
-%% do_tree({Name,_,[Head|Rest]}, Acc) ->
-%%   {N,_,V} = Head,
-%%   case Name =:= N of
-%%     true -> 
-%%       add_child(Acc,V);
-%%     _    ->
-%%       do_children(Acc,V)
-%%   end,
-%%   do_tree(Rest,Acc);
-
-%% do_tree([],Acc) ->
-%%   Acc.  
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%when the list contain only one element( a string)
-%% parse_term({Name,_,[Head | [] ]}, Acc)->
-parse_term(Tuple) ->
-  List = tuple_to_list(Tuple),
-  [H|[T]] = List,
-  Acc =#{<<"name">> => list_to_binary(H),
-      <<"children">> => []},
-  tree(T,Acc).
-
-tree([[{Name,Value}]|T],Acc) ->
-  L = maps:get(<<"children">>,Acc),
-  ?DEBUG(L),
-  Attribute = do_tree(Name,Value,[]),
-  ?DEBUG(Attribute),
-  Acc2 = Acc#{<<"children">> := [Attribute|L]},
-  ?DEBUG(Acc2),
-  tree(T,Acc2);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%Translate XML to JSON%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-tree([{Name,_,Value}|T],Acc) ->
- ?DEBUG(Value),
-  tree([[{Name,Value}]|T],Acc);
 
-%% tree([{Name,_,[Value|OtherVals]}|T],Acc)->
-%%   ok;
-tree([],Acc) ->
-  Acc.
+%%for now, we translate XML attributes as a leave with  with one child
+%% tree([[{Name,Value}]|T],Acc) ->
+%%   L = maps:get(<<"children">>,Acc),
+%%   Attribute = do_tree(Name,Value,[]),
+%%   Acc2 = Acc#{<<"children">> := [Attribute|L]},
+%%   tree(T,Acc2);
+
+%% three elements nested in a list
+
+%% tree([{Name,_,[Value|OtherVals]}|T],Acc) when OtherVals /= [] ->
+%%   ?DEBUG(Value),
+%%   {InnerName,_,InnerValue} = Value,
+%%   Tree = do_tree(Name,no_child,no_acc),
+%%   Attribute = tree([{InnerName,InnerValue}|OtherVals],Acc),
+%%   List = maps:get(<<"children">>,Tree),
+%%   ?DEBUG(Attribute),
+%%   Acc3 =   Acc#{<<"children">> := [Attribute|List]},
+%%   tree(T,Acc3);
+
+%% tree([],Acc) ->
+%%   Acc.
 
 %% -spec do_tree(string,[map()])-> map().
-do_tree(Name,Child,Acc) ->
-  #{<<"name">> => list_to_binary(Name),
-      <<"children">> => do_child(Child,Acc)}.
-do_child(Child,Acc) ->
-  [#{<<"name">> => list_to_binary(Child)}|Acc].
-%% parse_term({N,_,Ls},N,Acc) ->
+%% do_tree([{Name,Val}|Tail]) ->
+%%   #{<<"name">> =>list_to_binary(Name),
+%%     <<"children">> =>[do_tree(Tail)]}.
+%% do_tree(Name,Child,Acc) ->
+%%   #{<<"name">> => list_to_binary(Name),
+%%     <<"children">> => do_child(Child,Acc)}.
+
+
+%% do_child(Child,Acc) ->
+%%   [#{<<"name">> => list_to_binary(Child)}|Acc]
+
+%% the first value is either a string or a tuple,
+
+parse_term(Tuple) ->
+  List = tuple_to_list(Tuple),
+  start_tree(List).
+
+start_tree([H|T])->
+  ?DEBUG(T),
+  #{<<"name">> => list_to_binary(H),
+    <<"children">> => do_tree(T,[])}.
+
+do_tree([[{TpName,TpVal}]|T],Acc) ->
+  Tree = tree(TpName,TpVal), 
+  do_tree(lists:flatten(T),[Tree|Acc]);
+
+%% when the TpVal is not a list 
+do_tree([{TpName,_,TpVal}| T],Acc) ->
   
-%% parse_term({N,_,[]},N,Acc)->
-%%     Acc.
+  do_tree([[{TpName,TpVal}]|T],Acc);
+
+
+
+
+do_tree([],Acc)->
+    Acc.
+
+
+
+%%Auxiliar functions
+child(Val)->
+    #{<<"name">> => list_to_binary(Val)}.
+tree(Name,Val) ->
+  #{<<"name">> => list_to_binary(Name),
+    <<"children">> => [child(Val)]}.
+add_child(Tree,Child)->
+  List = maps:get(<<"children">>),
+  maps:update(<<"children">>,[Child|List],Tree).
