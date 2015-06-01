@@ -96,28 +96,66 @@ start_tree([H|T])->
     <<"children">> => do_tree(T,[])}.
 
 do_tree([[{TpName,TpVal}]|T],Acc) ->
-  Tree = tree(TpName,TpVal), 
+  Tree = tree(TpName,TpVal,do_tree), %original without acc
   do_tree(lists:flatten(T),[Tree|Acc]);
 
+
 %% when the TpVal is not a list 
-do_tree([{TpName,_,TpVal}| T],Acc) ->
-  
+do_tree([{TpName,_,TpVal}| T],Acc) ->  
   do_tree([[{TpName,TpVal}]|T],Acc);
 
-
-
+%% % when the Tp val is a list of Triples
+%% do_tree([{TpName,_,[TrHead|TrTail]}| T],Acc)->
+%%   {TrName,_,TrValue} = TrHead,
+%%   NewTree    = tree(TpName),
+%%   InnerTree  = do_tree([[{TrName,TrValue}]|TrTail],[]),
+%%   ResultTree = add_child(NewTree,InnerTree),
+%%   do_tree(lists:flatten(T),[ResultTree|Acc]);
+ 
 
 do_tree([],Acc)->
     Acc.
+% I am trying to make the tree recurse over
+%% the values which are lists.
+-spec tree(string(),[any()],atom())-> map().
+tree(Name,Values,do_tree)->
+  Acc = #{<<"name">> => list_to_binary(Name),
+         <<"children">> => []},
+  ?DEBUG(Name),
+  ?DEBUG(Values),
+  rec_tree(Values,Acc).
 
-
-
+rec_tree([{Name,Value}|T],Acc) ->
+    ?DEBUG(Name),
+    ?DEBUG(Value),
+    Child = child(Value),
+    Tree = tree(Name),
+    TreeWithChild = add_child(Tree,Child),
+    NewAcc = add_child(Acc,TreeWithChild),
+    rec_tree(T,NewAcc);
+rec_tree([],Acc) ->
+    Acc.
+    
 %%Auxiliar functions
+tree(Name)->
+  #{<<"name">> => list_to_binary(Name),
+    <<"children">> => []}.
+
 child(Val)->
     #{<<"name">> => list_to_binary(Val)}.
-tree(Name,Val) ->
-  #{<<"name">> => list_to_binary(Name),
-    <<"children">> => [child(Val)]}.
+
 add_child(Tree,Child)->
-  List = maps:get(<<"children">>),
+  
+  List = maps:get(<<"children">>,Tree),
   maps:update(<<"children">>,[Child|List],Tree).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%old tree that works and takes only one value
+%% tree(Name,Val) ->
+
+%%   #{<<"name">> => list_to_binary(Name),
+%%     <<"children">> => [child(Val)]}.
+%this is the old child, also working
+%% child(Val)->
+%%     #{<<"name">> => list_to_binary(Val)}.
