@@ -115,7 +115,7 @@ do_tree([{TpName,_,TpVal}| T],Acc) ->
 
 do_tree([],Acc)->
     Acc.
-% I am trying to make the tree recurse over
+% I am trying to model the tree such that recurse over
 %% the values which are lists.
 -spec tree(string(),[any()],atom())-> map().
 tree(Name,Values,do_tree)->
@@ -156,6 +156,6 @@ add_child(Tree,Child)->
 
 %%   #{<<"name">> => list_to_binary(Name),
 %%     <<"children">> => [child(Val)]}.
-%this is the old child, also working
+%this is the old child, also nice and old
 %% child(Val)->
 %%     #{<<"name">> => list_to_binary(Val)}.
