@@ -8,7 +8,7 @@ TEST_ERLC_OPTS = +'{parse_transform, lager_transform}'
 include erlang.mk
 
 
-shell: app
+start: app
 	erl -pa ../xml_viewer/ebin ../xml_viewer/deps/*/ebin \
 	../xml_viewer/files ../xml_viewer/include \
 	-eval "xml_viewer_app:start()"
