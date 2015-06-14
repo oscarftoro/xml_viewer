@@ -115,7 +115,7 @@ do_tree([{TpName,_,TpVal}| T],Acc) ->
 
 do_tree([],Acc)->
     Acc.
-% I am trying to model the tree such that recurse over
+% I am trying to model the tree such that it recurse over
 %% the values which are lists.
 -spec tree(string(),[any()],atom())-> map().
 tree(Name,Values,do_tree)->
@@ -128,6 +128,7 @@ tree(Name,Values,do_tree)->
 rec_tree([{Name,Value}|T],Acc) ->
     ?DEBUG(Name),
     ?DEBUG(Value),
+    ?DEBUG(T),
     Child = child(Value),
     Tree = tree(Name),
     TreeWithChild = add_child(Tree,Child),
