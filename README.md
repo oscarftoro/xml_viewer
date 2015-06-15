@@ -1,6 +1,6 @@
 XML_viewer
 ==========
-A project about XML, Erlang and more
+A project about XML,Erlang and more
 
 
 
