@@ -1,6 +1,7 @@
 XML_viewer
 ==========
-A project about XML,it use in Erlang and visualization of XML documents
+A project example about XML, validation of XML using a XSD file in Erlang and visualization of XML documents.
+
 
 
 
