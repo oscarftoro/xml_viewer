@@ -11,7 +11,7 @@
 
 init(_,Req, _Opts) ->
   {ok,Req, undefined}.
-
+%TODO:this is ugly, implement as a recursive handle
 handle(Req,State) ->
   {ok, XMLHeaders, Req2} = cowboy_req:part(Req),
   %%take the first part(XML file)
