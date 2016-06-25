@@ -1,5 +1,5 @@
 PROJECT    = xml_viewer
-DEPS       = sync lager erlsom cowboy bullet jiffy triq
+DEPS       = sync lager erlsom cowboy jiffy triq
 dep_reup   = git https://github.com/RJ/erlang-reup.git master
 dep_bullet = https://github.com/extend/bullet.git 0.4.1
 

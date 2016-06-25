@@ -8,8 +8,7 @@
 		kernel,
 		stdlib,
                 sasl,
-                cowboy,
-                bullet,
+                cowboy, 
                 erlsom,
                 sync
 	]},
