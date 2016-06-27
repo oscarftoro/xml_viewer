@@ -7,16 +7,24 @@ TEST_ERLC_OPTS = +'{parse_transform, lager_transform}'
 
 include erlang.mk
 
+get_client_deps: 
+	cd 'priv/client'
+	bower install bower.json
 
-start: app
+start: 
+	app
 	erl -pa ../xml_viewer/ebin ../xml_viewer/deps/*/ebin \
 	../xml_viewer/files ../xml_viewer/include \
 	-eval "xml_viewer_app:start()"
 
-debug: ERLC_COMPILE_OPTS = +'{parse_transform, lager_transform}'
-debug: ERLC_OPTS = -D debug_flag
-debug: clean app
+debug: 
+	ERLC_COMPILE_OPTS = +'{parse_transform, lager_transform}'
+debug: 
+	ERLC_OPTS = -D debug_flag
+debug: 
+	clean app
 	erl -pa ../xml_viewer/ebin ../xml_viewer/deps/*/ebin \
 	../xml_viewer/files ../xml_viewer/include \
 	-eval "lager:start(),xml_viewer_app:start()"
+
 
